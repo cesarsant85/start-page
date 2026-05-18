@@ -1,2 +1,2 @@
 # start-page
-# Vamos começar.
+Vamos começar.
