@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meu inicio clean | v1.4 2026 (alpha)</title>
+<title>Meu inicio | v.1.4 2026 (alpha)</title>
 <link rel="icon" href="icons/favicon.ico" type="image/x-icon">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -583,6 +583,155 @@ body::before {
   min-height: 16px;
 }
 
+/* ===================== BOTÃO SOBRE ===================== */
+.about-text-btn {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.75);
+}
+
+/* ===================== MODAL SOBRE ===================== */
+.about-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+
+.about-modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.about-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(8px);
+}
+
+.about-modal {
+  position: relative;
+  z-index: 1;
+  background: rgba(14,14,20,0.96);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 22px;
+  padding: 30px 32px;
+  width: 320px;
+  backdrop-filter: blur(30px);
+  transform: scale(0.96) translateY(8px);
+  transition: transform .25s var(--spring), opacity .25s;
+  text-align: center;
+}
+
+.about-modal-overlay.open .about-modal {
+  transform: scale(1) translateY(0);
+}
+
+.about-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: .2s;
+}
+
+.about-modal-close:hover {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.9);
+}
+
+.about-app-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  font-size: 26px;
+}
+
+.about-app-name {
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.about-version {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  opacity: .45;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.about-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 0 0 18px;
+}
+
+.about-dev-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: .4;
+  margin-bottom: 10px;
+}
+
+.about-dev-name {
+  font-size: 15px;
+  font-weight: 400;
+  opacity: .9;
+  margin-bottom: 6px;
+}
+
+.about-dev-info {
+  font-size: 12px;
+  opacity: .5;
+  line-height: 1.7;
+}
+
+.about-dev-info a {
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  transition: .2s;
+}
+
+.about-dev-info a:hover {
+  color: rgba(255,255,255,0.95);
+  border-bottom-color: rgba(255,255,255,0.55);
+}
+
+.about-year {
+  font-size: 11px;
+  opacity: .28;
+  margin-top: 18px;
+  letter-spacing: .5px;
+}
+
 /* ===================== RESPONSIVO ===================== */
 @media (max-width: 700px) {
   :root {
@@ -621,6 +770,9 @@ body::before {
   </button>
   <button class="icon-btn" id="wallpaperBtn" title="Próximo wallpaper">
     <img src="icons/wallpaper.png" alt="Wallpaper">
+  </button>
+  <button class="icon-btn about-text-btn" id="aboutBtn" title="Sobre">
+    <span>i</span>
   </button>
 </div>
 
@@ -665,6 +817,7 @@ body::before {
   <div class="search-wrapper">
     <form
       class="search-box"
+      id="searchForm"
       action="https://www.google.com/search"
       method="GET"
       target="_blank"
@@ -675,6 +828,7 @@ body::before {
       <input
         type="text"
         name="q"
+        id="searchInput"
         placeholder="Pesquisar na web..."
         autocomplete="off"
       >
@@ -828,6 +982,26 @@ body::before {
       <button class="city-confirm-btn" id="cityConfirmBtn">OK</button>
     </div>
     <div class="city-error" id="cityError"></div>
+  </div>
+</div>
+
+<!-- MODAL SOBRE -->
+<div class="about-modal-overlay" id="aboutModalOverlay">
+  <div class="about-modal-backdrop" id="aboutModalBackdrop"></div>
+  <div class="about-modal">
+    <button class="about-modal-close" id="aboutModalClose">&#x2715;</button>
+    <div class="about-app-icon">i</div>
+    <div class="about-app-name">Meu Início</div>
+    <div class="about-version">v.1.4&nbsp;·&nbsp;2026 (alpha)</div>
+    <div class="about-divider"></div>
+    <div class="about-dev-label">Desenvolvido por</div>
+    <div class="about-dev-name">César Santana</div>
+    <div class="about-dev-info">
+      <a href="https://github.com/cesarsant85" target="_blank" rel="noopener">github.com/cesarsant85</a><br>
+	  <a href="https://instagram.com/cesarsant_" target="_blank" rel="noopener">instagram.com/cesarsant_</a><br>
+      Sousa · Paraíba · Brasil
+    </div>
+    <div class="about-year">© 2026 CS Sotutions. Todos os direitos reservados.</div>
   </div>
 </div>
 
@@ -1136,7 +1310,7 @@ function updateWeatherUI(label, temp, code) {
 }
 
 async function loadWeather(cityOverride) {
-  const savedCity = cityOverride || localStorage.getItem('weatherCity') || 'Joao Pessoa, BR';
+  const savedCity = cityOverride || localStorage.getItem('weatherCity') || 'Sousa, PB';
   try {
     const { lat, lon, label } = await geocodeCity(savedCity);
     const current = await fetchWeather(lat, lon);
@@ -1244,6 +1418,36 @@ document.addEventListener('keydown', function(e) {
     closeModal();
     cityOverlay.classList.remove('open');
   }
+});
+
+/* ===================== PESQUISA — LIMPAR APÓS ENVIAR ===================== */
+
+document.getElementById('searchForm').addEventListener('submit', function() {
+  var input = document.getElementById('searchInput');
+  // Limpa após um tick para garantir que o form já capturou o valor
+  setTimeout(function() { input.value = ''; }, 50);
+});
+
+/* ===================== MODAL SOBRE ===================== */
+
+const aboutOverlay  = document.getElementById('aboutModalOverlay');
+const aboutBackdrop = document.getElementById('aboutModalBackdrop');
+
+document.getElementById('aboutBtn').addEventListener('click', function() {
+  aboutOverlay.classList.add('open');
+});
+
+document.getElementById('aboutModalClose').addEventListener('click', function() {
+  aboutOverlay.classList.remove('open');
+});
+
+aboutBackdrop.addEventListener('click', function() {
+  aboutOverlay.classList.remove('open');
+});
+
+// Fechar com Escape (adiciona ao listener existente)
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') aboutOverlay.classList.remove('open');
 });
 
 /* ===================== FULLSCREEN ===================== */
