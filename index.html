@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu inicio clean | v1.4 2026 (alpha)</title>
+<link rel="icon" href="icons/favicon.ico" type="image/x-icon">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+
+/* ===================== VARIÁVEIS ===================== */
+:root {
+  --font-main: 'Sora', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+
+  --clock-size: 88px;
+  --seconds-size: 26px;
+  --greeting-size: 17px;
+  --date-size: 13px;
+
+  --glass-bg: rgba(255,255,255,0.07);
+  --glass-bg-hover: rgba(255,255,255,0.12);
+  --glass-border: rgba(255,255,255,0.12);
+  --glass-border-hover: rgba(255,255,255,0.22);
+
+  --text: rgba(255,255,255,0.95);
+  --text-dim: rgba(255,255,255,0.55);
+
+  --ease: cubic-bezier(.25,.8,.25,1);
+  --spring: cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ===================== RESET ===================== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: var(--font-main);
+  color: var(--text);
+  background: #0a0a0a;
+  background-size: 100% auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 1.6s ease;
+  position: relative;
+}
+
+/* Overlay */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.50) 100%);
+  backdrop-filter: blur(2px);
+  z-index: 0;
+}
+
+/* ===================== CONTAINER ===================== */
+.container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 90px;
+}
+
+/* ===================== RELÓGIO ===================== */
+.clock-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.clock {
+  font-family: var(--font-mono);
+  font-size: var(--clock-size);
+  font-weight: 300;
+  letter-spacing: -3px;
+}
+
+.seconds {
+  font-family: var(--font-mono);
+  font-size: var(--seconds-size);
+  opacity: .5;
+  margin-top: 18px;
+}
+
+.date {
+  font-size: var(--date-size);
+  font-weight: 300;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: .6;
+  margin-bottom: 20px;
+}
+
+/* ===================== SAUDAÇÃO ===================== */
+.greeting {
+  font-size: var(--greeting-size);
+  font-weight: 300;
+  opacity: .82;
+  margin-bottom: 26px;
+}
+
+/* ===================== PESQUISA ===================== */
+.search-wrapper {
+  position: relative;
+}
+
+.search-box {
+  width: 340px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  padding: 0 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  transition: .3s;
+}
+
+.search-box:focus-within {
+  background: rgba(255,255,255,0.11);
+  border-color: rgba(255,255,255,0.25);
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,0.05),
+    0 8px 32px rgba(0,0,0,0.3);
+}
+
+.search-icon img {
+  width: 15px;
+  height: 15px;
+  opacity: .55;
+}
+
+.search-box input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 14px;
+  font-family: var(--font-main);
+}
+
+.search-box input::placeholder {
+  color: rgba(255,255,255,0.4);
+}
+
+/* ===================== BOTÕES TOPO ===================== */
+.top-bar {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  display: flex;
+  gap: 10px;
+}
+
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: .3s;
+}
+
+.icon-btn img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.icon-btn:hover {
+  transform: scale(1.08) translateY(-2px);
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+/* ===================== WIDGET CLIMA ===================== */
+.weather-widget {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+.weather-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 14px 18px;
+  min-width: 190px;
+  cursor: default;
+}
+
+.weather-location {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: .55;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.weather-location img {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+  opacity: .7;
+}
+
+.weather-edit-btn {
+  margin-left: auto;
+  width: 14px;
+  height: 14px;
+  opacity: .5;
+  cursor: pointer;
+  transition: opacity .2s;
+  flex-shrink: 0;
+}
+
+.weather-edit-btn:hover {
+  opacity: 1;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.weather-temp {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 300;
+}
+
+.weather-desc {
+  font-size: 12px;
+  opacity: .6;
+  margin-top: 6px;
+}
+
+/* ===================== FAVORITOS ===================== */
+.favorites {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 14px;
+  z-index: 5;
+}
+
+.group {
+  position: relative;
+}
+
+.group-btn {
+  width: 66px;
+  height: 66px;
+  border-radius: 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: .3s var(--spring);
+}
+
+.group-btn:hover {
+  transform: translateY(-5px) scale(1.04);
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow:
+    0 12px 36px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.group-btn-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.group-btn-label {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  opacity: .55;
+}
+
+/* ===================== MODAL ===================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  backdrop-filter: blur(8px);
+}
+
+.modal {
+  position: relative;
+  z-index: 1;
+  background: rgba(14,14,20,0.92);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 24px;
+  padding: 28px;
+  min-width: 340px;
+  max-width: 480px;
+  width: 90vw;
+  backdrop-filter: blur(30px);
+  transform: scale(0.96) translateY(8px);
+  transition: transform .25s var(--spring), opacity .25s;
+}
+
+.modal-overlay.open .modal {
+  transform: scale(1) translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-group-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-group-icon img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.modal-name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: .2s;
+}
+
+.modal-close:hover {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.9);
+}
+
+.modal-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: white;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: .25s;
+}
+
+.modal-link:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateX(4px);
+}
+
+.modal-link-favicon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.modal-link-favicon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.modal-link-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.modal-link-name {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-link-url {
+  font-size: 11px;
+  opacity: .4;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===================== MODAL EDITAR CIDADE ===================== */
+.city-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+
+.city-modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.city-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(6px);
+}
+
+.city-modal {
+  position: relative;
+  z-index: 1;
+  background: rgba(14,14,20,0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 24px;
+  width: 300px;
+  backdrop-filter: blur(30px);
+}
+
+.city-modal h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  opacity: .9;
+}
+
+.city-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.city-input {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: white;
+  font-family: var(--font-main);
+  font-size: 13px;
+  outline: none;
+  transition: .2s;
+}
+
+.city-input:focus {
+  border-color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.11);
+}
+
+.city-input::placeholder {
+  color: rgba(255,255,255,0.35);
+}
+
+.city-confirm-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: white;
+  font-family: var(--font-main);
+  font-size: 13px;
+  cursor: pointer;
+  transition: .2s;
+  white-space: nowrap;
+}
+
+.city-confirm-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.city-error {
+  font-size: 11px;
+  color: rgba(255,100,100,0.85);
+  margin-top: 8px;
+  min-height: 16px;
+}
+
+/* ===================== RESPONSIVO ===================== */
+@media (max-width: 700px) {
+  :root {
+    --clock-size: 60px;
+    --seconds-size: 18px;
+    --greeting-size: 14px;
+  }
+
+  .search-box {
+    width: 280px;
+  }
+
+  .weather-widget {
+    display: none;
+  }
+
+  .favorites {
+    gap: 10px;
+  }
+
+  .group-btn {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <button class="icon-btn" id="fullscreenBtn" title="Tela cheia">
+    <img src="icons/fullscreen.png" alt="Tela cheia">
+  </button>
+  <button class="icon-btn" id="wallpaperBtn" title="Próximo wallpaper">
+    <img src="icons/wallpaper.png" alt="Wallpaper">
+  </button>
+</div>
+
+<!-- CLIMA -->
+<div class="weather-widget">
+  <div class="weather-card">
+    <div class="weather-location">
+      <img src="icons/location.png" alt="Localização">
+      <span id="weatherCity">Carregando...</span>
+      <img
+        src="icons/edit.png"
+        alt="Editar cidade"
+        class="weather-edit-btn"
+        id="editCityBtn"
+        title="Editar cidade"
+      >
+    </div>
+    <div class="weather-main">
+      <div id="weatherEmoji" style="font-size:32px">&#x23F3;</div>
+      <div class="weather-temp" id="weatherTemp">--°C</div>
+    </div>
+    <div class="weather-desc" id="weatherDesc">Buscando dados...</div>
+  </div>
+</div>
+
+<!-- CONTAINER -->
+<div class="container">
+
+  <!-- RELÓGIO -->
+  <div class="clock-wrapper">
+    <div class="clock" id="clock">00:00</div>
+    <div class="seconds" id="seconds">00</div>
+  </div>
+
+  <!-- DATA -->
+  <div class="date" id="date">Segunda-feira</div>
+
+  <!-- SAUDAÇÃO -->
+  <div class="greeting" id="greeting">Bem vindo novamente, César</div>
+
+  <!-- PESQUISA -->
+  <div class="search-wrapper">
+    <form
+      class="search-box"
+      action="https://www.google.com/search"
+      method="GET"
+      target="_blank"
+    >
+      <span class="search-icon">
+        <img src="icons/search.png" alt="Pesquisar">
+      </span>
+      <input
+        type="text"
+        name="q"
+        placeholder="Pesquisar na web..."
+        autocomplete="off"
+      >
+    </form>
+  </div>
+
+</div>
+
+<!-- ===================== FAVORITOS ===================== -->
+<!-- 5 grupos ATIVOS (0-4). Para ativar mais grupos:       -->
+<!-- 1) Descomente o bloco HTML do grupo desejado abaixo   -->
+<!-- 2) Descomente o objeto correspondente no JavaScript   -->
+<div class="favorites">
+
+  <!-- GRUPO 0 — Ativo -->
+  <div class="group">
+    <button class="group-btn" data-group="0">
+      <img class="group-btn-icon" src="icons/ai.png" alt="AI">
+      <span class="group-btn-label">AI</span>
+    </button>
+  </div>
+
+  <!-- GRUPO 1 — Ativo -->
+  <div class="group">
+    <button class="group-btn" data-group="1">
+      <img class="group-btn-icon" src="icons/sistemas.png" alt="Sistemas">
+      <span class="group-btn-label">Systems</span>
+    </button>
+  </div>
+
+  <!-- GRUPO 2 — Ativo -->
+  <div class="group">
+    <button class="group-btn" data-group="2">
+      <img class="group-btn-icon" src="icons/governo.png" alt="Governo">
+      <span class="group-btn-label">Gov</span>
+    </button>
+  </div>
+
+  <!-- GRUPO 3 — Ativo -->
+  <div class="group">
+    <button class="group-btn" data-group="3">
+      <img class="group-btn-icon" src="icons/cloud.png" alt="Cloud">
+      <span class="group-btn-label">Cloud</span>
+    </button>
+  </div>
+
+  <!-- GRUPO 4 — Ativo -->
+  <div class="group">
+    <button class="group-btn" data-group="4">
+      <img class="group-btn-icon" src="icons/edit.png" alt="Edição">
+      <span class="group-btn-label">Edit</span>
+    </button>
+  </div>
+
+  <!-- GRUPO 5 — ATIVO -->
+  <div class="group">
+    <button class="group-btn" data-group="5">
+      <img class="group-btn-icon" src="icons/dev.png" alt="Dev">
+      <span class="group-btn-label">Dev</span>
+    </button>
+  </div>
+
+  <!-- GRUPO 6 — ATIVO -->
+    <div class="group">
+    <button class="group-btn" data-group="6">
+      <img class="group-btn-icon" src="icons/fav.png" alt="Favoritos">
+      <span class="group-btn-label">Fav</span>
+    </button>
+  </div>
+  
+  <!-- GRUPO 7 — DESATIVADO -->
+  <!--
+  <div class="group">
+    <button class="group-btn" data-group="7">
+      <img class="group-btn-icon" src="icons/tools.png" alt="Grupo 8">
+      <span class="group-btn-label">Grupo 8</span>
+    </button>
+  </div>
+  -->
+
+  <!-- GRUPO 8 — DESATIVADO -->
+  <!--
+  <div class="group">
+    <button class="group-btn" data-group="8">
+      <img class="group-btn-icon" src="icons/tools.png" alt="Grupo 9">
+      <span class="group-btn-label">Grupo 9</span>
+    </button>
+  </div>
+  -->
+
+  <!-- GRUPO 9 — DESATIVADO -->
+  <!--
+  <div class="group">
+    <button class="group-btn" data-group="9">
+      <img class="group-btn-icon" src="icons/tools.png" alt="Grupo 10">
+      <span class="group-btn-label">Grupo 10</span>
+    </button>
+  </div>
+  -->
+
+  <!-- GRUPO 10 — DESATIVADO -->
+  <!--
+  <div class="group">
+    <button class="group-btn" data-group="10">
+      <img class="group-btn-icon" src="icons/tools.png" alt="Grupo 11">
+      <span class="group-btn-label">Grupo 11</span>
+    </button>
+  </div>
+  -->
+
+  <!-- GRUPO 11 — DESATIVADO -->
+  <!--
+  <div class="group">
+    <button class="group-btn" data-group="11">
+      <img class="group-btn-icon" src="icons/tools.png" alt="Grupo 12">
+      <span class="group-btn-label">Grupo 12</span>
+    </button>
+  </div>
+  -->
+
+</div>
+
+<!-- MODAL FAVORITOS -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+  <div class="modal-backdrop"></div>
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">
+        <div class="modal-group-icon" id="modalIcon"></div>
+        <div class="modal-name" id="modalName"></div>
+      </div>
+      <button class="modal-close" id="modalClose" aria-label="Fechar">&#x2715;</button>
+    </div>
+    <div class="modal-links" id="modalLinks"></div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR CIDADE -->
+<div class="city-modal-overlay" id="cityModalOverlay">
+  <div class="city-modal-backdrop" id="cityModalBackdrop"></div>
+  <div class="city-modal">
+    <h3>Editar cidade</h3>
+    <div class="city-input-row">
+      <input
+        class="city-input"
+        type="text"
+        id="cityInput"
+        placeholder="Ex. Recife, BR"
+        autocomplete="off"
+      >
+      <button class="city-confirm-btn" id="cityConfirmBtn">OK</button>
+    </div>
+    <div class="city-error" id="cityError"></div>
+  </div>
+</div>
+
+<script>
+
+/* ===================== DADOS ===================== */
+/* Total: 12 grupos com 7 links cada.               */
+/* Grupos 0-4 ATIVOS, grupos 5-11 DESATIVADOS.      */
+/* Para ativar: descomente o objeto do grupo E o    */
+/* bloco HTML correspondente na secao FAVORITOS.    */
+
+const groups = [
+
+  // ─── GRUPO 0 — 01.Ferramentas IA (ATIVO) ───────────────────────────────────
+  {
+    icon: "icons/ai.png",
+    name: "Ferramentas IA",
+    links: [
+      { name: "ChatGPT",    url: "https://chatgpt.com/",           icon: "icons/chatgpt.png"    },
+      { name: "Claude AI",  url: "https://claude.ai/",             icon: "icons/claude.png"     },
+      { name: "NotebookLM", url: "https://notebooklm.google.com/", icon: "icons/notebooklm.png" }
+    ]
+  },
+
+  // ─── GRUPO 1 — 02.Sistemas (ATIVO) ──────────────────────────────
+  {
+    icon: "icons/sistemas.png",
+    name: "Sistemas",
+    links: [
+      { name: "Prontuario SUAS",   url: "https://aplicacoes.mds.gov.br/prontuario/",                       icon: "icons/cras.png"   },
+      { name: "RMA CRAS",          url: "https://aplicacoes.mds.gov.br/sagi/atendimento/auth/index.php",   icon: "icons/cras.png"   },
+      { name: "SAA",               url: "https://aplicacoes.mds.gov.br/saa-web/login.action",              icon: "icons/cras.png"   },
+      { name: "SigPBF",            url: "https://www.mds.gov.br/mds-sigpbf-web/carregarTelaLogin.jsf",     icon: "icons/bolsa.png"  },
+      { name: "SISC",              url: "https://aplicacoes.mds.gov.br/sisc/auth/index.php",               icon: "icons/cras.png"   }
+    ]
+  },
+
+  // ─── GRUPO 2 — 03.Governo (ATIVO) ─────────────────────────────────────────
+  {
+    icon: "icons/governo.png",
+    name: "Governo",
+    links: [
+      { name: "Assinador",               url: "https://assinador.iti.br/assinatura/index.xhtml",      icon: "icons/gov.png"    },
+      { name: "Consulta cidadão",        url: "https://aplicacoes.mds.gov.br/sagi/consulta_cidadao/", icon: "icons/bolsa.png"  },
+      { name: "Portal da transparência", url: "http://www.portaltransparencia.gov.br/",               icon: "icons/gov.png"    },
+      { name: "Prefeitura",              url: "http://serranegra.rn.gov.br/",                         icon: "icons/pref.png"   },
+      { name: "FEMURN",                  url: "https://www.diariomunicipal.com.br/femurn/pesquisar",  icon: "icons/femurn.png" },
+      { name: "Meu INSS",                url: "https://meu.inss.gov.br/#/login",                      icon: "icons/inss.png"   }
+    ]
+  },
+
+  // ─── GRUPO 3 — 4.Nuvem e comunicação (ATIVO) ──────────────────────────────
+  {
+    icon: "icons/cloud.png",
+    name: "Nuvem e comunicação",
+    links: [
+      { name: "Gmail",        url: "https://mail.google.com",                               icon: "icons/gmail.png"    },
+      { name: "Drive",        url: "https://drive.google.com",                              icon: "icons/drive.png"    },
+      { name: "Terabox",      url: "https://www.terabox.com/portuguese/main?category=all",  icon: "icons/tera.png"     },
+      { name: "Proton Mail",  url: "https://mail.proton.me/u/0/inbox",                      icon: "icons/proton.png"   },
+      { name: "PairDrop",     url: "https://pairdrop.net/",                                 icon: "icons/pairdrop.png" },
+      { name: "WhatsApp",     url: "https://web.whatsapp.com/",                             icon: "icons/whatsapp.png" }
+    ]
+  },
+
+  // ─── GRUPO 4 — 5.Edição (ATIVO) ──────────────────────────────────────────
+  {
+    icon: "icons/edit.png",
+    name: "Edição",
+    links: [
+      { name: "TinyWow",            url: "https://tinywow.com/",              icon: "icons/tinywow.png"     },
+      { name: "Magnific (Freepik)", url: "https://www.freepik.com/",          icon: "icons/freepik.png"     },
+      { name: "Rasterbator",        url: "https://rasterbator.net/",          icon: "icons/rasterbator.png" },
+      { name: "Icons8",             url: "https://icons8.com.br/",            icon: "icons/icons8.png"      },
+      { name: "Flaticon",           url: "https://www.flaticon.com/",         icon: "icons/flaticon.png"    },
+      { name: "Corrupt",            url: "https://corrupt-a-file.net/",       icon: "icons/corrupt.png"     },
+      { name: "QR Code generator",  url: "https://br.qr-code-generator.com/", icon: "icons/qrgenerator.png" }
+    ]
+  },
+
+  // ─── GRUPO 5 — 6.Dev ─────────────────────────────────────────────
+  {
+    icon: "icons/dev.png",
+    name: "Dev & Programação",
+    links: [
+      { name: "GitHub",                      url: "https://github.com/",                                                                icon: "icons/github.png"    },
+      { name: "InfoCRAS",                    url: "https://cesarsant85.github.io/infocras/",                                            icon: "icons/infocras.png"  },
+      { name: "Calculadora custo-beneficio", url: "https://cesarsant85.github.io/calc-vlsk/",                                           icon: "icons/calc.png"      },
+      { name: "My clean start page",         url: "https://cesarsant85.github.io/start-page/",                                          icon: "icons/wallpaper.png" },
+      { name: "Mempool",                     url: "https://mempool.space/pt/",                                                          icon: "icons/mempool.png"   },
+      { name: "Bip0039",                     url: "https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt",                   icon: "icons/bip0039.png"   },
+      { name: "Dadoware",                    url: "https://github.com/thoughtworks/dadoware/blob/master/7776palavras-numeradas-2e.txt", icon: "icons/github.png"    },
+      { name: "Password generator",          url: "https://www.averk.net/passgen.html",                                                 icon: "icons/dev.png"       }
+    ]
+  },
+
+  // ─── GRUPO 6 — 7.Favoritos ─────────────────────────────────────────────
+  
+  {
+    icon: "icons/fav.png",
+    name: "Favoritos",
+    links: [
+      { name: "Internet Archive", url: "https://archive.org/", icon: "icons/internetarchive.png" }
+    ]
+  },
+  
+  // ─── GRUPO 7 — [DESATIVADO] ─────────────────────────────────────────────
+  /*
+  {
+    icon: "icons/tools.png",
+    name: "Grupo 8",
+    links: [
+      { name: "Link 1", url: "#", icon: "icons/tools.png" },
+      { name: "Link 2", url: "#", icon: "icons/tools.png" },
+      { name: "Link 3", url: "#", icon: "icons/tools.png" },
+      { name: "Link 4", url: "#", icon: "icons/tools.png" },
+      { name: "Link 5", url: "#", icon: "icons/tools.png" },
+      { name: "Link 6", url: "#", icon: "icons/tools.png" },
+      { name: "Link 7", url: "#", icon: "icons/tools.png" }
+    ]
+  },
+  */
+
+  // ─── GRUPO 8 — [DESATIVADO] ─────────────────────────────────────────────
+  /*
+  {
+    icon: "icons/tools.png",
+    name: "Grupo 9",
+    links: [
+      { name: "Link 1", url: "#", icon: "icons/tools.png" },
+      { name: "Link 2", url: "#", icon: "icons/tools.png" },
+      { name: "Link 3", url: "#", icon: "icons/tools.png" },
+      { name: "Link 4", url: "#", icon: "icons/tools.png" },
+      { name: "Link 5", url: "#", icon: "icons/tools.png" },
+      { name: "Link 6", url: "#", icon: "icons/tools.png" },
+      { name: "Link 7", url: "#", icon: "icons/tools.png" }
+    ]
+  },
+  */
+
+  // ─── GRUPO 9 — [DESATIVADO] ─────────────────────────────────────────────
+  /*
+  {
+    icon: "icons/tools.png",
+    name: "Grupo 10",
+    links: [
+      { name: "Link 1", url: "#", icon: "icons/tools.png" },
+      { name: "Link 2", url: "#", icon: "icons/tools.png" },
+      { name: "Link 3", url: "#", icon: "icons/tools.png" },
+      { name: "Link 4", url: "#", icon: "icons/tools.png" },
+      { name: "Link 5", url: "#", icon: "icons/tools.png" },
+      { name: "Link 6", url: "#", icon: "icons/tools.png" },
+      { name: "Link 7", url: "#", icon: "icons/tools.png" }
+    ]
+  },
+  */
+
+  // ─── GRUPO 10 — [DESATIVADO] ────────────────────────────────────────────
+  /*
+  {
+    icon: "icons/tools.png",
+    name: "Grupo 11",
+    links: [
+      { name: "Link 1", url: "#", icon: "icons/tools.png" },
+      { name: "Link 2", url: "#", icon: "icons/tools.png" },
+      { name: "Link 3", url: "#", icon: "icons/tools.png" },
+      { name: "Link 4", url: "#", icon: "icons/tools.png" },
+      { name: "Link 5", url: "#", icon: "icons/tools.png" },
+      { name: "Link 6", url: "#", icon: "icons/tools.png" },
+      { name: "Link 7", url: "#", icon: "icons/tools.png" }
+    ]
+  },
+  */
+
+  // ─── GRUPO 11 — [DESATIVADO] ────────────────────────────────────────────
+  /*
+  {
+    icon: "icons/tools.png",
+    name: "Grupo 12",
+    links: [
+      { name: "Link 1", url: "#", icon: "icons/tools.png" },
+      { name: "Link 2", url: "#", icon: "icons/tools.png" },
+      { name: "Link 3", url: "#", icon: "icons/tools.png" },
+      { name: "Link 4", url: "#", icon: "icons/tools.png" },
+      { name: "Link 5", url: "#", icon: "icons/tools.png" },
+      { name: "Link 6", url: "#", icon: "icons/tools.png" },
+      { name: "Link 7", url: "#", icon: "icons/tools.png" }
+    ]
+  },
+  */
+
+];
+
+/* ===================== WALLPAPERS ===================== */
+
+const wallpapers = [
+  'https://guiaviajarmelhor.com.br/wp-content/uploads/2021/08/melhores-bairros-para-se-hospedar-joao-pessoa-5.jpg',
+  'https://wallpapercave.com/wp/wp15307637.jpg',
+  'https://wallpapercave.com/wp/wp15307725.jpg',
+  'https://sousa.pb.gov.br/uploads/images/IMG-20210315-WA0009(1).jpg',
+  'https://www.sertaopb.com.br/wp-content/uploads/2021/02/igreja-matriz.jpeg',
+  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920',
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920',
+  'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1920',
+  'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1920',
+  'https://images.unsplash.com/photo-1511300636408-a63a89df3482?q=80&w=1920',
+  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1920',
+  'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=1920',
+  'https://images.unsplash.com/photo-1778166188937-0fb2393ab8cd?q=80&w=1920',
+
+  // ADICIONE MAIS WALLPAPERS AQUI
+].filter(w => w && w !== '#');
+
+let currentWallpaper = Math.min(
+  +(localStorage.getItem('wp') || 0),
+  wallpapers.length - 1
+);
+
+function setWallpaper(i) {
+  if (!wallpapers[i]) return;
+  document.body.style.backgroundImage = "url('" + wallpapers[i] + "')";
+  localStorage.setItem('wp', i);
+}
+
+function nextWallpaper() {
+  currentWallpaper = (currentWallpaper + 1) % wallpapers.length;
+  setWallpaper(currentWallpaper);
+}
+
+setWallpaper(currentWallpaper);
+setInterval(nextWallpaper, 120000);
+
+document.getElementById('wallpaperBtn').addEventListener('click', nextWallpaper);
+
+/* ===================== RELÓGIO ===================== */
+
+function updateClock() {
+  const now  = new Date();
+  const H    = String(now.getHours()).padStart(2, '0');
+  const M    = String(now.getMinutes()).padStart(2, '0');
+  const S    = String(now.getSeconds()).padStart(2, '0');
+  const h    = now.getHours();
+  const greet = h >= 5 && h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+
+  document.getElementById('clock').textContent    = H + ':' + M;
+  document.getElementById('seconds').textContent  = S;
+  document.getElementById('date').textContent     = now.toLocaleDateString('pt-BR', {
+    weekday: 'long', day: '2-digit', month: 'long'
+  });
+  document.getElementById('greeting').textContent = greet + ' César Santana, bem vindo novamente.';
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ===================== CLIMA (Open-Meteo — sem chave) ===================== */
+
+const WMO_CODES = {
+  0:  ['\u2600\uFE0F', 'Céu limpo'],
+  1:  ['\uD83C\uDF24\uFE0F', 'Principalmente limpo'],
+  2:  ['\u26C5', 'Parcialmente nublado'],
+  3:  ['\u2601\uFE0F', 'Nublado'],
+  45: ['\uD83C\uDF2B\uFE0F', 'Névoa'],
+  48: ['\uD83C\uDF2B\uFE0F', 'Névoa com geada'],
+  51: ['\uD83C\uDF26\uFE0F', 'Garoa leve'],
+  53: ['\uD83C\uDF26\uFE0F', 'Garoa moderada'],
+  55: ['\uD83C\uDF27\uFE0F', 'Garoa intensa'],
+  61: ['\uD83C\uDF27\uFE0F', 'Chuva leve'],
+  63: ['\uD83C\uDF27\uFE0F', 'Chuva moderada'],
+  65: ['\uD83C\uDF27\uFE0F', 'Chuva intensa'],
+  71: ['\uD83C\uDF28\uFE0F', 'Neve leve'],
+  73: ['\uD83C\uDF28\uFE0F', 'Neve moderada'],
+  75: ['\u2744\uFE0F', 'Neve intensa'],
+  80: ['\uD83C\uDF26\uFE0F', 'Pancadas leves'],
+  81: ['\uD83C\uDF27\uFE0F', 'Pancadas moderadas'],
+  82: ['\u26C8\uFE0F', 'Pancadas intensas'],
+  95: ['\u26C8\uFE0F', 'Trovoada'],
+  96: ['\u26C8\uFE0F', 'Trovoada com granizo'],
+  99: ['\u26C8\uFE0F', 'Trovoada com granizo forte'],
+};
+
+async function geocodeCity(cityStr) {
+  const res  = await fetch(
+    'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(cityStr) + '&count=1&language=pt&format=json'
+  );
+  const data = await res.json();
+  if (!data.results || data.results.length === 0) throw new Error('Cidade não encontrada');
+  const r = data.results[0];
+  return { lat: r.latitude, lon: r.longitude, label: r.name + ', ' + r.country_code };
+}
+
+async function fetchWeather(lat, lon) {
+  const res  = await fetch(
+    'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,weathercode&temperature_unit=celsius&timezone=auto'
+  );
+  const data = await res.json();
+  return data.current;
+}
+
+function updateWeatherUI(label, temp, code) {
+  const info = WMO_CODES[code] || ['\uD83C\uDF21\uFE0F', 'Condição desconhecida'];
+  document.getElementById('weatherCity').textContent = label;
+  document.getElementById('weatherEmoji').textContent = info[0];
+  document.getElementById('weatherTemp').textContent  = Math.round(temp) + '\u00B0C';
+  document.getElementById('weatherDesc').textContent  = info[1];
+}
+
+async function loadWeather(cityOverride) {
+  const savedCity = cityOverride || localStorage.getItem('weatherCity') || 'Joao Pessoa, BR';
+  try {
+    const { lat, lon, label } = await geocodeCity(savedCity);
+    const current = await fetchWeather(lat, lon);
+    updateWeatherUI(label, current.temperature_2m, current.weathercode);
+    localStorage.setItem('weatherCity', savedCity);
+    localStorage.setItem('weatherLabel', label);
+  } catch (e) {
+    const cachedLabel = localStorage.getItem('weatherLabel');
+    if (cachedLabel) document.getElementById('weatherCity').textContent = cachedLabel;
+    document.getElementById('weatherDesc').textContent = 'Sem conexão';
+  }
+}
+
+loadWeather();
+setInterval(function() { loadWeather(); }, 10 * 60 * 1000);
+
+/* ===================== MODAL EDITAR CIDADE ===================== */
+
+const cityOverlay  = document.getElementById('cityModalOverlay');
+const cityInput    = document.getElementById('cityInput');
+const cityError    = document.getElementById('cityError');
+const cityBackdrop = document.getElementById('cityModalBackdrop');
+
+document.getElementById('editCityBtn').addEventListener('click', function() {
+  cityInput.value = localStorage.getItem('weatherCity') || '';
+  cityError.textContent = '';
+  cityOverlay.classList.add('open');
+  setTimeout(function() { cityInput.focus(); }, 100);
+});
+
+cityBackdrop.addEventListener('click', function() { cityOverlay.classList.remove('open'); });
+
+document.getElementById('cityConfirmBtn').addEventListener('click', async function() {
+  const val = cityInput.value.trim();
+  if (!val) return;
+  cityError.textContent = '';
+  document.getElementById('cityConfirmBtn').textContent = '...';
+  try {
+    await loadWeather(val);
+    cityOverlay.classList.remove('open');
+  } catch {
+    cityError.textContent = 'Cidade não encontrada. Tente ex: "Recife, BR"';
+  } finally {
+    document.getElementById('cityConfirmBtn').textContent = 'OK';
+  }
+});
+
+cityInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter')  document.getElementById('cityConfirmBtn').click();
+  if (e.key === 'Escape') cityOverlay.classList.remove('open');
+});
+
+/* ===================== MODAL FAVORITOS ===================== */
+
+const overlay    = document.getElementById('modalOverlay');
+const modalIcon  = document.getElementById('modalIcon');
+const modalName  = document.getElementById('modalName');
+const modalLinks = document.getElementById('modalLinks');
+
+function openModal(groupIndex) {
+  const g = groups[groupIndex];
+  if (!g) return;
+
+  modalIcon.innerHTML = '<img src="' + g.icon + '" alt="' + g.name + '" width="22" height="22" style="object-fit:contain">';
+  modalName.textContent = g.name;
+  modalLinks.innerHTML  = '';
+
+  g.links.forEach(function(link) {
+    var domain = link.url;
+    try { domain = new URL(link.url).hostname; } catch (e) {}
+
+    const a = document.createElement('a');
+    a.className = 'modal-link';
+    a.href      = link.url;
+    a.target    = '_blank';
+    a.rel       = 'noopener noreferrer';
+    a.innerHTML =
+      '<div class="modal-link-favicon">' +
+        '<img src="' + link.icon + '" alt="' + link.name + '" loading="lazy">' +
+      '</div>' +
+      '<div class="modal-link-info">' +
+        '<div class="modal-link-name">' + link.name + '</div>' +
+        '<div class="modal-link-url">'  + domain    + '</div>' +
+      '</div>';
+
+    modalLinks.appendChild(a);
+  });
+
+  overlay.classList.add('open');
+}
+
+function closeModal() {
+  overlay.classList.remove('open');
+}
+
+document.querySelectorAll('.group-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() { openModal(+btn.dataset.group); });
+});
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeModal();
+    cityOverlay.classList.remove('open');
+  }
+});
+
+/* ===================== FULLSCREEN ===================== */
+
+const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+function updateFullscreenIcon() {
+  const isFs = !!document.fullscreenElement;
+  fullscreenBtn.innerHTML = isFs
+    ? '<img src="icons/undo.png" alt="Sair de tela cheia">'
+    : '<img src="icons/fullscreen.png" alt="Tela cheia">';
+  fullscreenBtn.title = isFs ? 'Sair de tela cheia' : 'Tela cheia';
+}
+
+fullscreenBtn.addEventListener('click', function() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(function() {});
+  } else {
+    document.exitFullscreen().catch(function() {});
+  }
+});
+
+document.addEventListener('fullscreenchange', updateFullscreenIcon);
+
+</script>
+</body>
+</html>
