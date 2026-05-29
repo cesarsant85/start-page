@@ -32,6 +32,9 @@
 
   --ease: cubic-bezier(.25,.8,.25,1);
   --spring: cubic-bezier(.34,1.56,.64,1);
+
+  /* Modal links scroll: altura = 7 itens × (item ~57px + gap 8px) */
+  --modal-links-max-height: 455px;
 }
 
 /* ===================== RESET ===================== */
@@ -50,7 +53,7 @@ body {
   font-family: var(--font-main);
   color: var(--text);
   background: #0a0a0a;
-  background-size: 100% auto;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   transition: background-image 1.6s ease;
@@ -78,6 +81,8 @@ body::before {
   align-items: center;
   justify-content: center;
   padding-bottom: 90px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 /* ===================== RELÓGIO ===================== */
@@ -110,6 +115,7 @@ body::before {
   text-transform: uppercase;
   opacity: .6;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 /* ===================== SAUDAÇÃO ===================== */
@@ -118,15 +124,19 @@ body::before {
   font-weight: 300;
   opacity: .82;
   margin-bottom: 26px;
+  text-align: center;
+  padding: 0 8px;
 }
 
 /* ===================== PESQUISA ===================== */
 .search-wrapper {
   position: relative;
+  width: 100%;
+  max-width: 340px;
 }
 
 .search-box {
-  width: 340px;
+  width: 100%;
   height: 44px;
   display: flex;
   align-items: center;
@@ -151,6 +161,7 @@ body::before {
   width: 15px;
   height: 15px;
   opacity: .55;
+  flex-shrink: 0;
 }
 
 .search-box input {
@@ -171,10 +182,10 @@ body::before {
 .top-bar {
   position: absolute;
   top: 20px;
-  right: 20px;
+  right: 16px;
   z-index: 10;
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .icon-btn {
@@ -189,6 +200,7 @@ body::before {
   align-items: center;
   justify-content: center;
   transition: .3s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .icon-btn img {
@@ -208,7 +220,7 @@ body::before {
 .weather-widget {
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 16px;
   z-index: 10;
 }
 
@@ -281,10 +293,21 @@ body::before {
   display: flex;
   gap: 14px;
   z-index: 5;
+  /* Permite scroll horizontal em telas muito pequenas */
+  max-width: calc(100vw - 24px);
+  overflow-x: auto;
+  padding: 4px 8px 8px;
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* IE/Edge */
+}
+
+.favorites::-webkit-scrollbar {
+  display: none;                  /* Chrome/Safari */
 }
 
 .group {
   position: relative;
+  flex-shrink: 0;
 }
 
 .group-btn {
@@ -301,6 +324,7 @@ body::before {
   justify-content: center;
   gap: 5px;
   transition: .3s var(--spring);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .group-btn:hover {
@@ -358,12 +382,16 @@ body::before {
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 24px;
   padding: 28px;
-  min-width: 340px;
+  min-width: 320px;
   max-width: 480px;
-  width: 90vw;
+  width: 92vw;
   backdrop-filter: blur(30px);
   transform: scale(0.96) translateY(8px);
   transition: transform .25s var(--spring), opacity .25s;
+  /* Evita que o modal estoure a tela em celulares */
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-overlay.open .modal {
@@ -375,6 +403,7 @@ body::before {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 .modal-title {
@@ -392,6 +421,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .modal-group-icon img {
@@ -418,6 +448,8 @@ body::before {
   align-items: center;
   justify-content: center;
   transition: .2s;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .modal-close:hover {
@@ -425,10 +457,29 @@ body::before {
   color: rgba(255,255,255,0.9);
 }
 
+/* Scroll nos links quando > 7 itens */
 .modal-links {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow-y: auto;
+  max-height: var(--modal-links-max-height);
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+.modal-links::-webkit-scrollbar {
+  width: 4px;
+}
+
+.modal-links::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-links::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
 }
 
 .modal-link {
@@ -442,6 +493,8 @@ body::before {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.07);
   transition: .25s;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .modal-link:hover {
@@ -500,6 +553,7 @@ body::before {
   opacity: 0;
   pointer-events: none;
   transition: opacity .2s;
+  padding: 16px;
 }
 
 .city-modal-overlay.open {
@@ -521,7 +575,8 @@ body::before {
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 20px;
   padding: 24px;
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
   backdrop-filter: blur(30px);
 }
 
@@ -548,6 +603,7 @@ body::before {
   font-size: 13px;
   outline: none;
   transition: .2s;
+  min-width: 0;
 }
 
 .city-input:focus {
@@ -603,6 +659,7 @@ body::before {
   opacity: 0;
   pointer-events: none;
   transition: opacity .2s;
+  padding: 16px;
 }
 
 .about-modal-overlay.open {
@@ -624,7 +681,8 @@ body::before {
   border: 1px solid rgba(255,255,255,0.13);
   border-radius: 22px;
   padding: 30px 32px;
-  width: 320px;
+  width: 100%;
+  max-width: 320px;
   backdrop-filter: blur(30px);
   transform: scale(0.96) translateY(8px);
   transition: transform .25s var(--spring), opacity .25s;
@@ -651,6 +709,7 @@ body::before {
   align-items: center;
   justify-content: center;
   transition: .2s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .about-modal-close:hover {
@@ -732,29 +791,160 @@ body::before {
   letter-spacing: .5px;
 }
 
-/* ===================== RESPONSIVO ===================== */
-@media (max-width: 700px) {
+/* ===================== RESPONSIVO — TABLET ===================== */
+@media (max-width: 768px) {
   :root {
-    --clock-size: 60px;
-    --seconds-size: 18px;
-    --greeting-size: 14px;
+    --clock-size: 72px;
+    --seconds-size: 22px;
+    --greeting-size: 15px;
   }
 
-  .search-box {
-    width: 280px;
-  }
-
-  .weather-widget {
-    display: none;
+  .container {
+    padding-bottom: 100px;
   }
 
   .favorites {
     gap: 10px;
+    bottom: 18px;
+  }
+}
+
+/* ===================== RESPONSIVO — MOBILE ===================== */
+@media (max-width: 480px) {
+  :root {
+    --clock-size: 54px;
+    --seconds-size: 17px;
+    --greeting-size: 13px;
+    --date-size: 11px;
+    /* Em mobile, reduz altura máx dos links proporcionalmente */
+    --modal-links-max-height: 350px;
+  }
+
+  .clock {
+    letter-spacing: -2px;
+  }
+
+  .seconds {
+    margin-top: 12px;
+  }
+
+  .greeting {
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  /* Clima: versão compacta no mobile (mantém visível, mas menor) */
+  .weather-widget {
+    top: 12px;
+    left: 12px;
+  }
+
+  .weather-card {
+    padding: 10px 14px;
+    min-width: 0;
+    border-radius: 14px;
+  }
+
+  .weather-location {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  .weather-temp {
+    font-size: 22px;
+  }
+
+  .weather-desc {
+    font-size: 11px;
+  }
+
+  /* Top bar ajustada */
+  .top-bar {
+    top: 12px;
+    right: 12px;
+    gap: 6px;
+  }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+  }
+
+  .icon-btn img {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Favoritos: botões menores, scroll horizontal já habilitado acima */
+  .favorites {
+    gap: 8px;
+    bottom: 14px;
+    padding: 4px 12px 6px;
   }
 
   .group-btn {
-    width: 58px;
-    height: 58px;
+    width: 56px;
+    height: 56px;
+    border-radius: 17px;
+  }
+
+  .group-btn-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .group-btn-label {
+    font-size: 8px;
+  }
+
+  /* Modal ocupa quase tela toda em mobile */
+  .modal {
+    width: 96vw;
+    padding: 20px 18px;
+    border-radius: 20px;
+    max-height: 85vh;
+  }
+
+  .modal-name {
+    font-size: 14px;
+  }
+
+  .modal-link {
+    padding: 10px 14px;
+    gap: 12px;
+  }
+
+  .modal-link-name {
+    font-size: 13px;
+  }
+
+  /* Esconde clima em telas muito pequenas (< 380px) */
+  @media (max-width: 380px) {
+    .weather-widget {
+      display: none;
+    }
+  }
+}
+
+/* ===================== RESPONSIVO — TELAS MUITO ALTAS (mobile portrait) ===================== */
+@media (max-height: 600px) {
+  :root {
+    --clock-size: 52px;
+    --seconds-size: 16px;
+    --greeting-size: 12px;
+  }
+
+  .greeting {
+    margin-bottom: 12px;
+  }
+
+  .container {
+    padding-bottom: 80px;
+  }
+
+  .favorites {
+    bottom: 12px;
   }
 }
 
@@ -829,7 +1019,7 @@ body::before {
         type="text"
         name="q"
         id="searchInput"
-        placeholder="Pesquisar na web..."
+        placeholder="Pesquisar..."
         autocomplete="off"
       >
     </form>
@@ -838,7 +1028,7 @@ body::before {
 </div>
 
 <!-- ===================== FAVORITOS ===================== -->
-<!-- 5 grupos ATIVOS (0-4). Para ativar mais grupos:       -->
+<!-- 7 grupos ATIVOS (0-6). Para ativar mais grupos:       -->
 <!-- 1) Descomente o bloco HTML do grupo desejado abaixo   -->
 <!-- 2) Descomente o objeto correspondente no JavaScript   -->
 <div class="favorites">
@@ -892,13 +1082,13 @@ body::before {
   </div>
 
   <!-- GRUPO 6 — ATIVO -->
-    <div class="group">
+  <div class="group">
     <button class="group-btn" data-group="6">
       <img class="group-btn-icon" src="icons/fav.png" alt="Favoritos">
       <span class="group-btn-label">Fav</span>
     </button>
   </div>
-  
+
   <!-- GRUPO 7 — DESATIVADO -->
   <!--
   <div class="group">
@@ -998,20 +1188,19 @@ body::before {
     <div class="about-dev-name">César Santana</div>
     <div class="about-dev-info">
       <a href="https://github.com/cesarsant85" target="_blank" rel="noopener">github.com/cesarsant85</a><br>
-	  <a href="https://instagram.com/cesarsant_" target="_blank" rel="noopener">instagram.com/cesarsant_</a><br>
+      <a href="https://instagram.com/cesarsant_" target="_blank" rel="noopener">instagram.com/cesarsant_</a><br>
       Sousa · Paraíba · Brasil
     </div>
-    <div class="about-year">© 2026 CS Sotutions. Todos os direitos reservados.</div>
+    <div class="about-year">© 2026 CS Solutions. Todos os direitos reservados.</div>
   </div>
 </div>
 
 <script>
 
 /* ===================== DADOS ===================== */
-/* Total: 12 grupos com 7 links cada.               */
-/* Grupos 0-4 ATIVOS, grupos 5-11 DESATIVADOS.      */
+/* Total: 12 grupos com N links cada.               */
 /* Para ativar: descomente o objeto do grupo E o    */
-/* bloco HTML correspondente na secao FAVORITOS.    */
+/* bloco HTML correspondente na seção FAVORITOS.    */
 
 const groups = [
 
@@ -1077,6 +1266,7 @@ const groups = [
       { name: "Rasterbator",        url: "https://rasterbator.net/",          icon: "icons/rasterbator.png" },
       { name: "Icons8",             url: "https://icons8.com.br/",            icon: "icons/icons8.png"      },
       { name: "Flaticon",           url: "https://www.flaticon.com/",         icon: "icons/flaticon.png"    },
+      { name: "ICO Converter",      url: "https://www.icoconverter.com/",     icon: "icons/edit.png"        },
       { name: "Corrupt",            url: "https://corrupt-a-file.net/",       icon: "icons/corrupt.png"     },
       { name: "QR Code generator",  url: "https://br.qr-code-generator.com/", icon: "icons/qrgenerator.png" }
     ]
@@ -1099,7 +1289,6 @@ const groups = [
   },
 
   // ─── GRUPO 6 — 7.Favoritos ─────────────────────────────────────────────
-  
   {
     icon: "icons/fav.png",
     name: "Favoritos",
@@ -1107,7 +1296,7 @@ const groups = [
       { name: "Internet Archive", url: "https://archive.org/", icon: "icons/internetarchive.png" }
     ]
   },
-  
+
   // ─── GRUPO 7 — [DESATIVADO] ─────────────────────────────────────────────
   /*
   {
@@ -1399,6 +1588,9 @@ function openModal(groupIndex) {
     modalLinks.appendChild(a);
   });
 
+  // Rola de volta ao topo sempre que abrir
+  modalLinks.scrollTop = 0;
+
   overlay.classList.add('open');
 }
 
@@ -1424,7 +1616,6 @@ document.addEventListener('keydown', function(e) {
 
 document.getElementById('searchForm').addEventListener('submit', function() {
   var input = document.getElementById('searchInput');
-  // Limpa após um tick para garantir que o form já capturou o valor
   setTimeout(function() { input.value = ''; }, 50);
 });
 
@@ -1445,7 +1636,6 @@ aboutBackdrop.addEventListener('click', function() {
   aboutOverlay.classList.remove('open');
 });
 
-// Fechar com Escape (adiciona ao listener existente)
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') aboutOverlay.classList.remove('open');
 });
